@@ -1,0 +1,37 @@
+BasedOnStyle: LLVM
+Language: Cpp
+Standard: c++20
+
+# ---- Namespaces ----
+NamespaceIndentation: None
+CompactNamespaces: true
+
+# ---- Line breaks / spacing ----
+AllowShortFunctionsOnASingleLine: Inline
+AllowShortBlocksOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortLoopsOnASingleLine: false
+AlwaysBreakTemplateDeclarations: Yes
+
+# Avoid excessive vertical space
+MaxEmptyLinesToKeep: 1
+KeepEmptyLinesAtTheStartOfBlocks: false
+
+# ---- Braces ----
+BreakBeforeBraces: Attach
+
+# ---- Alignment ----
+AlignAfterOpenBracket: Align
+AlignOperands: true
+AlignConsecutiveAssignments: false
+AlignConsecutiveDeclarations: false
+
+# ---- Indentation ----
+IndentWidth: 2
+ContinuationIndentWidth: 2
+
+# ---- Includes ----
+SortIncludes: true
+
+# ---- Comments ----
+ReflowComments: Always
