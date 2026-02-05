@@ -39,6 +39,12 @@ struct SegmentSize {
   explicit SegmentSize(const std::size_t n) : n(n) {}
   std::size_t n;
 };
+
+template <class T>
+concept BufferElement =
+  std::is_trivially_copyable_v<T> &&
+  std::is_trivially_destructible_v<T>;
+
 } // namespace detail
 
 template <class Tag>
@@ -47,7 +53,7 @@ constexpr auto Segment(const std::size_t n) noexcept {
 }
 
 template <class Underlier, class... Tags>
-  requires detail::UniqueTags<Tags...>
+  requires detail::BufferElement<Underlier> && detail::UniqueTags<Tags...>
 class Buffer {
 public:
   static constexpr std::size_t N = sizeof...(Tags);
