@@ -66,8 +66,8 @@ auto buffer = segmented_buffer::MakeSegmentedBuffer<double>(
 Access segments by tag:
 
 ```cpp
-std::span<double> levels  = buffer.get<Foo>();
-std::span<double> results = buffer.get<Bar>();
+std::span<double> foo  = buffer.get<Foo>();
+std::span<double> bar = buffer.get<Bar>();
 ```
 
 Each call to `get<Tag>()` returns a `std::span` covering that segment.
@@ -76,19 +76,20 @@ Each call to `get<Tag>()` returns a `std::span` covering that segment.
 
 ## Design properties
 
-- **Single allocation**
-- **Contiguous layout**
-- **Fixed sizes after construction**
-- **No resizing**
-- **No runtime lookup**
-- **No virtual dispatch**
-- **Zero overhead abstractions**
+- Single allocation
+- Contiguous layout
+- Fixed sizes after construction
+- No resizing
+- No runtime lookup
+- No virtual dispatch
+- Zero overhead abstractions
 
 All errors related to:
 - missing segments
 - duplicated tags
 - incorrect construction
-are detected **at compile time**.
+
+are detected at compile time.
 
 ---
 
