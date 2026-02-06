@@ -8,6 +8,11 @@
 struct Foo {};
 struct Bar {};
 
+TEST(SegmentedBuffer, ZeroSize) {
+  segmented_buffer::Buffer<double> b;
+  EXPECT_EQ(b.total_size(), 0u);
+}
+
 TEST(SegmentedBuffer, BasicSizesAndAccess) {
   auto b = segmented_buffer::MakeSegmentedBuffer<double>(
     segmented_buffer::Segment<Foo>(10), segmented_buffer::Segment<Bar>(20));

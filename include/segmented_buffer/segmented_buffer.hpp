@@ -42,8 +42,7 @@ struct SegmentSize {
 
 template <class T>
 concept BufferElement =
-  std::is_trivially_copyable_v<T> &&
-  std::is_trivially_destructible_v<T>;
+  std::is_trivially_copyable_v<T> && std::is_trivially_destructible_v<T>;
 
 } // namespace detail
 
@@ -62,16 +61,15 @@ public:
     requires std::is_same_v<std::tuple<Specs...>,
                             std::tuple<detail::SegmentSize<Tags>...>>
   explicit Buffer(const Specs... specs) {
-    bounds_[0] = 0;
     std::size_t cur = 0;
     std::size_t i = 0;
     auto add = [&](std::size_t count) {
       cur += count;
-      bounds_[++i] = cur;
+      ends_[i++] = cur;
     };
     (add(specs.n), ...);
 
-    data_ = std::make_unique<Underlier[]>(bounds_[N]);
+    data_ = std::make_unique<Underlier[]>(N == 0 ? 0 : ends_[N - 1]);
   }
 
   Buffer(const Buffer &) = delete;
@@ -83,20 +81,26 @@ public:
     requires detail::contains_v<Tag, Tags...>
   [[nodiscard]] std::span<Underlier> get() noexcept {
     constexpr std::size_t i = detail::index_of<Tag, Tags...>::value;
-    return {data_.get() + bounds_[i], bounds_[i + 1] - bounds_[i]};
+    const std::size_t end = ends_[i];
+    const std::size_t start = (i == 0) ? 0 : ends_[i - 1];
+    return {data_.get() + start, end - start};
   }
 
   template <class Tag>
     requires detail::contains_v<Tag, Tags...>
   [[nodiscard]] std::span<const Underlier> get() const noexcept {
     constexpr std::size_t i = detail::index_of<Tag, Tags...>::value;
-    return {data_.get() + bounds_[i], bounds_[i + 1] - bounds_[i]};
+    const std::size_t end = ends_[i];
+    const std::size_t start = (i == 0) ? 0 : ends_[i - 1];
+    return {data_.get() + start, end - start};
   }
 
-  [[nodiscard]] std::size_t total_size() const noexcept { return bounds_[N]; }
+  [[nodiscard]] std::size_t total_size() const noexcept {
+    return N == 0 ? 0 : ends_[N - 1];
+  }
 
 private:
-  std::array<std::size_t, N + 1> bounds_{}; // boundaries (prefix sums)
+  std::array<std::size_t, N> ends_{}; // boundaries (prefix sums)
   std::unique_ptr<Underlier[]> data_{};
 };
 
